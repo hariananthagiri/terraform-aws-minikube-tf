@@ -128,30 +128,25 @@ resource "aws_key_pair" "minikube_keypair" {
 # EC2 instance
 #####
 
-data "aws_ami" "centos8" {
+ data "aws_ami" "centos8" {
+  owners      = ["973714476881"]
   most_recent = true
-  owners = ["aws-marketplace"]
 
   filter {
-    name = "AMI ID"
-    values = ["ami-0b4f379183e5706b9"]
-  }
-  filter {
-    name = "product-code"
-    values = ["aw0evgkw8e5c1q413zgy5pjce", "cvugziknvmxgqna9noibqnnsy"]
-  }
-  
-  filter {
-    name = "architecture"
-    values = ["x86_64"]
+    name   = "name"
+    values = ["Centos-8-DevOps-Practice"]
   }
 
   filter {
-    name = "virtualization-type"
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  filter {
+    name   = "virtualization-type"
     values = ["hvm"]
   }
 }
-
 resource "aws_eip" "minikube" {
   vpc = true
 }
