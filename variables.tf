@@ -24,6 +24,7 @@ variable "aws_instance_type" {
 
 variable "aws_subnet_id" {
   description = "The subnet-id to be used for the instance"
+  default = "subnet-05f4372ee4f889edb"
 }
 
 variable "ssh_public_key" {
