@@ -128,25 +128,26 @@ resource "aws_key_pair" "minikube_keypair" {
 # EC2 instance
 #####
 
- data "aws_ami" "centos8" {
-  owners      = ["973714476881"]
+data "aws_ami" "centos7" {
   most_recent = true
+  owners = ["aws-marketplace"]
 
   filter {
-    name   = "name"
-    values = ["Centos-8-DevOps-Practice"]
+    name = "product-code"
+    values = ["aw0evgkw8e5c1q413zgy5pjce", "cvugziknvmxgqna9noibqnnsy"]
   }
 
   filter {
-    name   = "root-device-type"
-    values = ["ebs"]
+    name = "architecture"
+    values = ["x86_64"]
   }
 
   filter {
-    name   = "virtualization-type"
+    name = "virtualization-type"
     values = ["hvm"]
   }
 }
+
 resource "aws_eip" "minikube" {
   vpc = true
 }
@@ -155,7 +156,7 @@ resource "aws_instance" "minikube" {
   # Instance type - any of the c4 should do for now
   instance_type = var.aws_instance_type
 
-  ami = length(var.ami_image_id) > 0 ? var.ami_image_id : data.aws_ami.centos8.id
+  ami = length(var.ami_image_id) > 0 ? var.ami_image_id : data.aws_ami.centos7.id
 
   key_name = aws_key_pair.minikube_keypair.key_name
 
@@ -215,4 +216,3 @@ resource "aws_route53_record" "minikube" {
   records = [aws_eip.minikube.public_ip]
   ttl = 300
 }
-
