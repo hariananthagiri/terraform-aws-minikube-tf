@@ -130,7 +130,7 @@ resource "aws_key_pair" "minikube_keypair" {
 
 data "aws_ami" "centos8" {
   most_recent = true
-  owners = ["aws-marketplace"]       #  973714476881
+  owners = ["973714476881"]       #  973714476881
 
   filter {
     name = "product-code"
