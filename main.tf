@@ -90,8 +90,8 @@ EOF
 }
 
 resource "aws_iam_policy_attachment" "minikube-attach" {
-  name       = "minikube-attachment"
-  roles      = [aws_iam_role.minikube_role.name]
+  name = "minikube-attachment"
+  roles = [aws_iam_role.minikube_role.name]
   policy_arn = aws_iam_policy.minikube_policy.arn
 }
 
@@ -105,13 +105,13 @@ resource "aws_iam_instance_profile" "minikube_profile" {
 ##########
 
 data "cloudinit_config" "minikube_cloud_init" {
-  gzip          = true
+  gzip = true
   base64_encode = true
 
   part {
-    filename     = "init-aws-minikube.sh"
+    filename = "init-aws-minikube.sh"
     content_type = "text/x-shellscript"
-    content      = templatefile("${path.module}/scripts/init-aws-minikube.sh", { kubeadm_token = module.kubeadm-token.token, dns_name = "${var.cluster_name}.${var.hosted_zone}", ip_address = aws_eip.minikube.public_ip, cluster_name = var.cluster_name, kubernetes_version = var.kubernetes_version, addons = join(" ", var.addons) })
+    content = templatefile("${path.module}/scripts/init-aws-minikube.sh", { kubeadm_token = module.kubeadm-token.token, dns_name = "${var.cluster_name}.${var.hosted_zone}", ip_address = aws_eip.minikube.public_ip, cluster_name = var.cluster_name, kubernetes_version = var.kubernetes_version, addons = join(" ", var.addons) } )
   }
 }
 
@@ -120,32 +120,31 @@ data "cloudinit_config" "minikube_cloud_init" {
 ##########
 
 resource "aws_key_pair" "minikube_keypair" {
-  key_name   = var.cluster_name
+  key_name = var.cluster_name
   public_key = file(var.ssh_public_key)
 }
 
 #####
 # EC2 instance
 #####
-
 data "aws_ami" "centos8" {
-  owners      = ["973714476881"]
-  most_recent = true
+    owners = ["973714476881"]
+    most_recent      = true
 
-  filter {
-    name   = "name"
-    values = ["Centos-8-DevOps-Practice"]
-  }
+    filter {
+        name   = "name"
+        values = ["Centos-8-DevOps-Practice"]
+    }
 
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
+    filter {
+        name   = "root-device-type"
+        values = ["ebs"]
+    }
 
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+    filter {
+        name   = "virtualization-type"
+        values = ["hvm"]
+    }
 }
 
 resource "aws_eip" "minikube" {
@@ -174,15 +173,15 @@ resource "aws_instance" "minikube" {
 
   tags = merge(
     {
-      "Name"                                               = var.cluster_name
+      "Name" = var.cluster_name
       format("kubernetes.io/cluster/%v", var.cluster_name) = "owned"
     },
     var.tags,
   )
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = "50"
+    volume_type = "gp2"
+    volume_size = "50"
     delete_on_termination = true
   }
 
@@ -196,7 +195,7 @@ resource "aws_instance" "minikube" {
 }
 
 resource "aws_eip_association" "minikube_assoc" {
-  instance_id   = aws_instance.minikube.id
+  instance_id = aws_instance.minikube.id
   allocation_id = aws_eip.minikube.id
 }
 
@@ -205,14 +204,14 @@ resource "aws_eip_association" "minikube_assoc" {
 #####
 
 data "aws_route53_zone" "dns_zone" {
-  name         = "${var.hosted_zone}."
+  name = "${var.hosted_zone}."
   private_zone = var.hosted_zone_private
 }
 
 resource "aws_route53_record" "minikube" {
   zone_id = data.aws_route53_zone.dns_zone.zone_id
-  name    = "${var.cluster_name}.${var.hosted_zone}"
-  type    = "A"
+  name = "${var.cluster_name}.${var.hosted_zone}"
+  type = "A"
   records = [aws_eip.minikube.public_ip]
-  ttl     = 300
+  ttl = 300
 }
