@@ -128,9 +128,9 @@ resource "aws_key_pair" "minikube_keypair" {
 # EC2 instance
 #####
 
-data "aws_ami" "centos7" {
+data "aws_ami" "centos8" {
   most_recent = true
-  owners = ["973714476881"]
+  owners = ["aws-marketplace"]       #  973714476881
 
   filter {
     name = "product-code"
