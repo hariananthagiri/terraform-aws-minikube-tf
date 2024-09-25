@@ -24,7 +24,7 @@ variable "aws_instance_type" {
 
 variable "aws_subnet_id" {
   description = "The subnet-id to be used for the instance"
-  }
+}
 
 variable "ssh_public_key" {
   description = "Path to the pulic part of SSH key which should be used for the instance"
