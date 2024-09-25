@@ -155,7 +155,7 @@ resource "aws_instance" "minikube" {
   # Instance type - any of the c4 should do for now
   instance_type = var.aws_instance_type
 
-  ami = "ami-0b4f379183e5706b9"
+  ami = var.ami_image_id
   key_name = aws_key_pair.minikube_keypair.key_name
 
   subnet_id = var.aws_subnet_id
