@@ -128,13 +128,13 @@ resource "aws_key_pair" "minikube_keypair" {
 # EC2 instance
 #####
 
-data "aws_ami" "ami_info" {
-    most_recent = true
+data "aws_ami" "centos8"{
     owners = ["973714476881"]
+    most_recent      = true
 
     filter {
         name   = "name"
-        values = ["RHEL-9-DevOps-Practice"]
+        values = ["Centos-8-DevOps-Practice"]
     }
 
     filter {
@@ -145,7 +145,7 @@ data "aws_ami" "ami_info" {
     filter {
         name   = "virtualization-type"
         values = ["hvm"]
-   }
+    }
 }
 
 
@@ -157,7 +157,7 @@ resource "aws_instance" "minikube" {
   # Instance type - any of the c4 should do for now
   instance_type = var.aws_instance_type
 
-  ami = length(var.ami_image_id) > 0 ? var.ami_image_id : data.aws_ami.ami_info.id
+  ami = length(var.ami_image_id) > 0 ? var.ami_image_id : data.aws_ami.centos8.id 
 
   key_name = aws_key_pair.minikube_keypair.key_name
 
